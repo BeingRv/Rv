@@ -18,7 +18,7 @@ public class AccountController implements  IAccountController{
     }
 
     @Override
-    public ResponseEntity getAccountById(Long id) {
+    public ResponseEntity<?> getAccountById(Long id) {
         return iAccountService.getAccountById(id);
     }
 

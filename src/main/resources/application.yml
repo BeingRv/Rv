@@ -21,3 +21,6 @@ springdoc:
     operationsSorter: method
     tagsSorter: alpha
 
+server:
+  error:
+    include-stacktrace: never

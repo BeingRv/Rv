@@ -13,7 +13,7 @@ public interface IAccountController {
     ResponseEntity getAllAccount();
 
     @GetMapping("/{id}")
-    ResponseEntity getAccountById(@PathVariable Long id);
+    ResponseEntity<?> getAccountById(@PathVariable Long id);
 
 
     @PostMapping("/create")
