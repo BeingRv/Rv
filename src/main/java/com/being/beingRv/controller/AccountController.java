@@ -13,8 +13,6 @@ public class AccountController implements  IAccountController{
     @Autowired
     private IAccountService iAccountService;
     @Override
-
-
     public ResponseEntity getAllAccount() {
         return iAccountService.getAllAccount();
     }
