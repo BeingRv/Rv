@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Trading Journal</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="container mt-4">
+    <h1>Trading Journal</h1>
+
+    <form th:action="@{${trade.id} != null ? '/update/' + ${trade.id} : '/add'}" th:object="${trade}" method="post" class="mb-4">
+        <div class="row">
+            <div class="col"><input type="date" th:field="*{date}" class="form-control" required></div>
+            <div class="col"><input type="text" th:field="*{instrument}" placeholder="Instrument" class="form-control" required></div>
+            <div class="col"><input type="text" th:field="*{position}" placeholder="Position" class="form-control" required></div>
+            <div class="col"><input type="number" th:field="*{lotSize}" placeholder="Lot Size" class="form-control" required></div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col"><input type="text" th:field="*{entryReason}" placeholder="Entry Reason" class="form-control"></div>
+            <div class="col"><input type="text" th:field="*{slTarget}" placeholder="SL/Target" class="form-control"></div>
+            <div class="col"><input type="text" th:field="*{exitPrice}" placeholder="Exit Price" class="form-control"></div>
+            <div class="col"><input type="number" th:field="*{pnl}" placeholder="P&L" class="form-control"></div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col"><input type="number" th:field="*{disciplineRating}" placeholder="Discipline (1-5)" class="form-control" min="1" max="5"></div>
+            <div class="col"><input type="text" th:field="*{remarks}" placeholder="Remarks" class="form-control"></div>
+        </div>
+
+        <button type="submit" class="btn btn-primary mt-3">Save Trade</button>
+    </form>
+
+    <canvas id="pnlChart" height="100"></canvas>
+
+    <table class="table table-bordered mt-4">
+        <thead>
+        <tr>
+            <th>Date</th><th>Instrument</th><th>Position</th><th>Lot Size</th><th>Entry Reason</th>
+            <th>SL/Target</th><th>Exit Price</th><th>P&L</th><th>Discipline</th><th>Remarks</th><th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="trade : ${trades}">
+            <td th:text="${trade.date}"></td>
+            <td th:text="${trade.instrument}"></td>
+            <td th:text="${trade.position}"></td>
+            <td th:text="${trade.lotSize}"></td>
+            <td th:text="${trade.entryReason}"></td>
+            <td th:text="${trade.slTarget}"></td>
+            <td th:text="${trade.exitPrice}"></td>
+            <td th:text="${trade.pnl}"></td>
+            <td th:text="${trade.disciplineRating}"></td>
+            <td th:text="${trade.remarks}"></td>
+            <td>
+                <a th:href="@{'/edit/' + ${trade.id}}" class="btn btn-warning btn-sm">Edit</a>
+                <a th:href="@{'/delete/' + ${trade.id}}" class="btn btn-danger btn-sm">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    let trades = [[${trades}]];
+    let dates = trades.map(t => t.date);
+    let pnls = trades.map(t => t.pnl);
+    const ctx = document.getElementById('pnlChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Daily P&L',
+                data: pnls,
+                backgroundColor: pnls.map(p => p >= 0 ? 'green' : 'red')
+            }]
+        }
+    });
+    /*]]>*/
+</script>
+</body>
+</html>
